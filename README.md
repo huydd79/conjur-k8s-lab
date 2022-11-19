@@ -5,6 +5,7 @@ This project will help you to quickly build up the standalone, single VM lab env
 - conjur push to k8s file
 - conjur push to kubernetes secret
 - and other
+
 All setup, installing and configuration steps are all put in sequence of scripts to make the setup process quicker and easier
 
 Comments and question, please send to <huy.do@cyberark.com>
