@@ -1,4 +1,4 @@
-# Building your CyberArk Conjur Enterprise and Openshift CRC LAB
+# Building standalone CyberArk Conjur Enterprise and K8s LAB
 Created by <huy.do@cyberark.com>
 ### Video on step by step setting up this LAB is at https://youtu.be/...
 
