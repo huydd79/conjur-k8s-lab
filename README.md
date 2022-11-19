@@ -1,5 +1,6 @@
 # Building standalone CyberArk Conjur Enterprise and K8s LAB
 Created by <huy.do@cyberark.com>
+This project will help you to build up the standalone, single VM lab environment to test conjur and k8s application integration including jwt authentication, conjur push to file and conjur push to kubernetes secret method
 ### Video on step by step setting up this LAB is at https://youtu.be/...
 
 # PART I: SETING UP ENVIRONMENT
