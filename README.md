@@ -198,4 +198,4 @@ cd /opt/lab/conjur-k8s-lab/3.cityapp-setup
 ```
 # PART IV: FINAL TESTING
 Login to conjur GUI, change the value of secret ```test/host1/user```, ``` test/host1/pass``` and wait for 30 seconds. Refeshing the cityapp webpages to see if the credential values can be changed
-# LAB END
+# --- LAB END ---
