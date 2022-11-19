@@ -24,6 +24,10 @@ Created by <huy.do@cyberark.com>
 - CentOS Stream 9 can be downloaded at https://www.centos.org/download/
 - Creating VM and installing with minimal install option
 - Checking for IP, DNS and Internet connection
+- Installing git tool
+```
+yum -y install git
+```
 ## **Step1.2: Copying files for setting up**
 Login to VM as root, creating folder for setup_files
 ```
@@ -32,3 +36,14 @@ chmod 777 /opt/lab/setup_files
 ```
 Copy conjur appliance image file to setup_files folder
 - Conjur docker image: conjur-appliance-Rls-12.7.tar.gz
+## **Step1.3: Cloning git hub repo**
+Login to VM as root and running below command
+```
+cd /opt/lab
+git clone git clone https://github.com/huydd79/conjur-k8s-lab
+```
+Installation folder contains 3 sub folders for diffirent setup
+- 1.k8s-setup: scripts to setup k8s standalone cluster environment
+- 2.conjur-setp: scripts to install podman, mysql, conjur master containers and deploying conjur follower in k8s
+- 3.cityapp-setup: scripts to deploys different types of cityapp application
+Each folder will have ```00.config.sh``` which contains some parameters. Review file content, change all related parameters to actual value and set ```READY=true``` before doing further steps.
