@@ -1,0 +1,107 @@
+# Define the JWT Authenticator endpoint in Conjur
+# Ref: https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-DAP/Latest/en/Content/Integrations/k8s-ocp/k8s-jwt-authn.htm#ConfiguretheJWTAuthenticator
+- !policy
+  id: conjur/authn-jwt/k8s
+  owner: !group admins
+  body:
+  - !webservice
+
+  # Uncomment one of following variables depending on the public availability
+  # of the Service Account Issuer Discovery service in Kubernetes 
+  # If the service is publicly available, uncomment 'jwks-uri'.
+  # If the service is not available, uncomment 'public-keys'
+  # - !variable jwks-uri
+  - !variable public-keys
+  - !variable issuer
+  - !variable token-app-property
+  - !variable identity-path
+  - !variable audience
+
+  # Group of applications that can authenticate using this JWT Authenticator
+  - !group apps
+
+  - !permit
+    role: !group apps
+    privilege: [ read, authenticate ]
+    resource: !webservice
+
+  - !webservice status
+
+  # Group of users who can check the status of the JWT Authenticator
+  - !group operators
+
+  - !permit
+    role: !group operators
+    privilege: [ read ]
+    resource: !webservice status
+
+# Enable the seed generation service
+# Ref: https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-DAP/Latest/en/Content/Integrations/k8s-ocp/k8s-jwt-authn.htm
+- !policy
+  id: conjur/seed-generation
+  owner: !group admins
+  body:
+  # This webservice represents the Seed service API
+  - !webservice
+
+  # Hosts that can generate seeds become members of the
+  # `consumers` group.
+  - !group consumers
+
+  # Authorize `consumers` to request seeds
+  - !permit
+    role: !group consumers
+    privilege: [ "execute" ]
+    resource: !webservice
+
+- !group k8s-admins
+- !policy
+  id: jwt-apps/k8s
+  owner: !group k8s-admins
+  body:
+  # Define an identity in Conjur for the Conjur Follower
+  # Ref: https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-DAP/Latest/en/Content/Integrations/k8s-ocp/k8s-jwt-follower.htm
+  - !host
+    id: system:serviceaccount:conjur:follower
+    annotations:
+      authn-jwt/k8s/kubernetes.io/namespace: conjur
+      authn-jwt/k8s/kubernetes.io/serviceaccount/name: follower
+  # Define the application as a Conjur host in policy
+  # Ref: https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-DAP/Latest/en/Content/Integrations/k8s-ocp/cjr-k8s-authn-client-authjwt.htm
+  - !host
+    id: system:serviceaccount:cityapp:cityapp-conjurtok8sfile
+    annotations:
+      authn-jwt/k8s/kubernetes.io/namespace: cityapp
+      authn-jwt/k8s/kubernetes.io/serviceaccount/name: cityapp-conjurtok8sfile
+  - !host
+    id: system:serviceaccount:cityapp:cityapp-secretless
+    annotations:
+      authn-jwt/k8s/kubernetes.io/namespace: cityapp
+      authn-jwt/k8s/kubernetes.io/serviceaccount/name: cityapp-secretless
+  - !host
+    id: system:serviceaccount:cityapp:cityapp-conjurtok8ssecret
+    annotations:
+      authn-jwt/k8s/kubernetes.io/namespace: cityapp
+      authn-jwt/k8s/kubernetes.io/serviceaccount/name: cityapp-conjurtok8ssecret
+  - !layer cityapp
+  - !grant
+    role: !layer cityapp
+    members:
+    - !host system:serviceaccount:cityapp:cityapp-conjurtok8sfile
+    - !host system:serviceaccount:cityapp:cityapp-secretless
+    - !host system:serviceaccount:cityapp:cityapp-conjurtok8ssecret
+
+# Give the Conjur Follower permission to authenticate to Conjur and to use the seed service using the JWT Authenticator endpoint.
+- !grant
+  roles:
+  - !group conjur/authn-jwt/k8s/apps
+  - !group conjur/seed-generation/consumers
+  members:
+  - !host jwt-apps/k8s/system:serviceaccount:conjur:follower
+
+# Grant the host permissions to the JWT Authenticator and secrets
+- !grant
+  roles:
+  - !group conjur/authn-jwt/k8s/apps
+  - !layer test/test_hosts
+  member: !layer jwt-apps/k8s/cityapp

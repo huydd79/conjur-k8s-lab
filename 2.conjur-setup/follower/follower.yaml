@@ -1,0 +1,111 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: follower
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: follower
+  labels:
+    app: follower
+spec:
+  ports:
+  - port: 443
+    nodePort: 30444
+    name: https
+  selector:
+    app: follower
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: follower
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: follower
+  template:
+    metadata:
+      labels:
+        app: follower
+        name: follower
+        role: follower
+    spec:
+      serviceAccountName: follower
+      hostAliases:
+      - ip: "CONJUR_IP"
+        hostnames:
+        - "conjur-master.LAB_DOMAIN"
+      containers:
+      - name: conjur-appliance
+        image: localhost/conjur-appliance:CONJUR_VERSION
+        command: ["/tmp/seedfile/start-follower.sh"]
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: SEEDFILE_DIR
+            value: /tmp/seedfile
+          - name: CONJUR_AUTHENTICATORS
+            value: authn-jwt/k8s
+        ports:
+        - containerPort: 443
+          name: https
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 443
+            scheme: HTTPS
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        volumeMounts:
+          - name: seedfile
+            mountPath: /tmp/seedfile
+            readOnly: true
+      initContainers:
+      - name: authenticator
+        image: docker.io/cyberark/dap-seedfetcher
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: MY_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: FOLLOWER_HOSTNAME
+            value: follower
+          - name: SEEDFILE_DIR
+            value: /tmp/seedfile
+          - name: JWT_TOKEN_PATH
+            value: /var/run/secrets/tokens/jwt
+          - name: AUTHENTICATOR
+            value: authn-jwt
+        envFrom:
+          - configMapRef:
+              name: follower-cm
+        volumeMounts:
+          - name: seedfile
+            mountPath: /tmp/seedfile
+          - name: conjur-token
+            mountPath: /run/conjur
+          - name: jwt-token
+            mountPath: /var/run/secrets/tokens
+      volumes:
+      - name: seedfile
+        emptyDir:
+          medium: Memory
+      - name: conjur-token
+        emptyDir:
+          medium: Memory
+      - name: jwt-token
+        projected:
+          sources:
+          - serviceAccountToken:
+              audience: cybrdemo
+              path: jwt
+              expirationSeconds: 6000

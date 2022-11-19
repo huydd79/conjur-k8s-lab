@@ -1,0 +1,35 @@
+- !policy
+  id: test
+  body:
+    - !layer
+      id: test_hosts
+    - !host
+      id: testhost01
+    - !grant
+      role: !layer test_hosts
+      member: !host testhost01
+    - !host-factory
+      id: test_hosts
+      layers: !layer test_hosts
+    - !group
+      id: test_users
+    - !user
+      id: testuser01
+    - !grant
+      role: !group test_users
+      member: !user testuser01
+    - &variables
+      - !variable host1/host
+      - !variable host1/user
+      - !variable host1/pass
+      - !variable host2/host
+      - !variable host2/user
+      - !variable host2/pass
+    - !permit
+      resource: *variables
+      privileges: [ read, execute ]
+      roles: !layer test_hosts
+    - !permit
+      resource: *variables
+      privileges: [ read, execute ]
+      roles: !group test_users

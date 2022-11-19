@@ -1,0 +1,15 @@
+- !group admins
+- !group
+  id: demo-admins
+  owner: !group admins
+- !permit
+  role: !group admins
+  privileges: [ read, create, update ]
+  resource: !policy root
+- !policy
+  id: demo
+  owner: !group admins
+  body:
+    - !policy
+      id: k8s-apps
+      owner: !group /demo-admins

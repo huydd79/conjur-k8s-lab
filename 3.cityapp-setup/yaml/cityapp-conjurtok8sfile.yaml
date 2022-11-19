@@ -1,0 +1,96 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cityapp-conjurtok8sfile
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cityapp-conjurtok8sfile
+  labels:
+    app: cityapp-conjurtok8sfile
+spec:
+  ports:
+  - port: 80
+    nodePort: 30081
+    name: http
+  selector:
+    app: cityapp-conjurtok8sfile
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: cityapp-conjurtok8sfile
+  name: cityapp-conjurtok8sfile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cityapp-conjurtok8sfile
+  template:
+    metadata:
+      labels:
+        app: cityapp-conjurtok8sfile
+      annotations:
+        conjur.org/container-mode: sidecar
+        conjur.org/secrets-destination: file
+        conjur.org/jwt-token-path: /var/run/secrets/tokens/jwt
+        conjur.org/conjur-secrets.cityapp-conjurtok8sfile: |
+          - dbaddr: test/host1/host
+          - dbuser: test/host1/user
+          - dbpass: test/host1/pass
+        conjur.org/secret-file-path.cityapp-conjurtok8sfile: ./worlddb.json
+        conjur.org/secret-file-format.cityapp-conjurtok8sfile: 'json'
+        conjur.org/secrets-refresh-interval: 30s
+    spec:
+      serviceAccountName: cityapp-conjurtok8sfile
+      hostAliases:
+      - ip: "{LAB_IP}"
+        hostnames:
+        - "mysql.{LAB_DOMAIN}"
+      containers:
+      - name: cityapp
+        image: localhost/cityapp:php
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: conjur-secrets
+            mountPath: /conjur
+            readOnly: true
+      - name: conjurtok8sfile
+        image: docker.io/cyberark/secrets-provider-for-k8s:latest
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: podinfo
+          mountPath: /conjur/podinfo
+        - name: conjur-secrets
+          mountPath: /conjur/secrets
+        - name: jwt-token
+          mountPath: /var/run/secrets/tokens
+        env:
+          - name: MY_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        envFrom:
+          - configMapRef:
+              name: apps-cm
+      volumes:
+        - name: podinfo
+          downwardAPI:
+            items:
+              - path: annotations
+                fieldRef:
+                  fieldPath: metadata.annotations
+        - name: conjur-secrets
+          emptyDir:
+            medium: Memory
+        - name: jwt-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: jwt
+                  expirationSeconds: 6000
+                  audience: cybrdemo
