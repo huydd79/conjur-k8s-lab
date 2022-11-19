@@ -61,3 +61,73 @@ Checking crio service after done to make sure crio is up and run
 ```
 service crio status
 ```
+## **Step2.1.2: Installing kubelet kubeadm and kubectl**
+Login to VM as root, running below command to kubelet and tools
+```
+cd /opt/lab/conjur-k8s-lab/1.k8s-setup
+./02.installing-k8s-and-tools.sh
+```
+## **Step2.1.3: Setting up cluster and networking**
+Login to VM as root, running below command to kubelet and tools
+```
+cd /opt/lab/conjur-k8s-lab/1.k8s-setup
+./03.creating-k8s-cluster.sh 
+```
+Make sure that cni0 interface is getting correct IP (in 10.244) before doing futher steps
+```
+ip address show dev cni0 | grep 10.244
+```
+Checking for the kubelet service status and cluster info
+```
+service kubelet status
+kubectl get all
+```
+## **Step2.1.4: Setting up kubernetes dashboard**
+Login to VM as root, running below command to kubelet and tools
+```
+cd /opt/lab/conjur-k8s-lab/1.k8s-setup
+.04.installing-k8s-dashboard.sh
+```
+Copy the value of service account token to notepad for later usage. Checking status of k8s dashboard deployment
+```
+kubectl -n kubernetes-dashboard get pods -o wide
+```
+Open browser and login to k8s dashboard using previous copied token
+```
+https://<VMIP>:30443
+```
+# 2. Setting up podman and conjur environment
+## **Step2.2.1: Reviewing 00.config.sh**
+Login to VM as root, edit the 00.config.sh
+```
+cd /opt/lab/conjur-k8s-lab/2.conjur-setup
+vi 00.config.sh
+```
+Changed all related parameters such as IP, domain, password... and set ```READY=true``` to continue
+## **Step2.2.2: Installing podman**
+Login to VM as root and running below commands
+```
+cd /opt/lab/conjur-k8s-lab/2.conjur-setup
+./01.installing-podman.sh
+```
+Using ```podman image ls``` to check current podman images
+## **Step2.2.3: Setting up mysql container and database**
+Login to VM as root and running below commands
+```
+cd /opt/lab/conjur-k8s-lab/2.conjur-setup
+./02.running-mysql-db.sh
+```
+Using command ```podman container ls``` to make sure mysql container is up and running.
+Using command ```ping mysql.demo.local``` to make sure host entry has been added correctly
+## **Step2.2.4: Installing conjur master**
+Login to VM as root and running below commands
+```
+cd /opt/lab/conjur-k8s-lab/2.conjur-setup
+./03.loading-conjur-images.sh
+./04.starting-conjur-container.sh
+./05.configuring-conjur-master.sh
+```
+Using command ```podman image ls``` to make sure that image is loaded correctly
+Using command ```podman container ls``` to make sure that conjur1 container is up and running
+Using command ```curl -k https://conjur-master.demo.local/info``` to check conjur master status
+Using browser and put in conjur master URL ```https://<VMIP>```, login using user admin and password is set in ```00.config.sh``` file
