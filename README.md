@@ -131,3 +131,30 @@ Using command ```podman image ls``` to make sure that image is loaded correctly
 Using command ```podman container ls``` to make sure that conjur1 container is up and running
 Using command ```curl -k https://conjur-master.demo.local/info``` to check conjur master status
 Using browser and put in conjur master URL ```https://<VMIP>```, login using user admin and password is set in ```00.config.sh``` file
+## **Step2.2.5: Installing conjur CLI**
+Login to VM as root and running below commands
+```
+cd /opt/lab/conjur-k8s-lab/2.conjur-setup
+./06.installing-conjur-cli.sh
+```
+Providing admin password for conjur cli configuration. Using command ```conjur whoami``` to doublecheck.
+## **Step2.2.6: Loading demo data and enable conjur-k8s-jwt authentication**
+Login to VM as root and running below commands
+```
+cd /opt/lab/conjur-k8s-lab/2.conjur-setup
+./07.loading-demo-data.sh
+./08.enable-k8s-jwt-authenticator.sh
+./09.loading-conjur-jwt-data.sh 
+```
+Using ```curl -k https://conjur-master.demo.local/info``` to see the authenticaion options that are allowed.
+Using browser, login to conjur GUI to review the demo data and content
+## **Step2.2.7: Deploying conjur follower on k8s**
+Login to VM as root and running below commands
+```
+cd /opt/lab/conjur-k8s-lab/2.conjur-setup
+./10.loading-k8s-follower-configmap.sh 
+11.deploying-follower-k8s.sh 
+```
+Login to k8s dashboard, select namespace conjur and checking for follower deployment and pod status
+Login to conjur GUI, go to ```seting>Conjur Cluster``` to check for follower status
+Open browser and go to ```https://<VM-IP>:30444/info``` to check for follower detai info
