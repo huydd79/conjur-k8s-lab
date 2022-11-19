@@ -27,6 +27,7 @@ Comments and question, please send to <huy.do@cyberark.com>
     - conjur-appliance-Rls-12.7.tar.gz
     - conjur-cli-rhel-8.tzr.gz
   - CyberArk softwares and related tools can be downloaded at https://cyberark-customers.force.com/mplace/s/#software
+
  *The IP addresses in this document are using from current lab environment. Please replace the **172.16.100.109** by your actual **VM IP**’s
     
 # 1.2. VMs Preparation
