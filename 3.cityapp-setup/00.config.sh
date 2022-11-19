@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #Change your configuration and set READY=true when done
-READY=true
+READY=false
 
 #IP addresses of conjur and crc VM
 LAB_IP=172.16.100.109
