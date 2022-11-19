@@ -3,7 +3,7 @@ Created by <huy.do@cyberark.com>
 ### Video on step by step setting up this LAB is at https://youtu.be/...
 
 # PART I: SETING UP ENVIRONMENT
-# 1. LAB Prerequisites
+# 1.1. LAB Prerequisites
 - ESXI server or VMWorkstation to create standalone lab VM as below:
   - 8GB RAM (minimum), recommended 16GB
   - 2 vCore CPU
@@ -19,7 +19,7 @@ Created by <huy.do@cyberark.com>
   - CyberArk softwares and related tools can be downloaded at https://cyberark-customers.force.com/mplace/s/#software
  *The IP addresses in this document are using from current lab environment. Please replace the **172.16.100.109** by your actual **VM IP**’s
     
-# 2. VMs Preparation
+# 1.2. VMs Preparation
 ## **Step1.2.1: Preparing CentOS Stream 9**
 - CentOS Stream 9 can be downloaded at https://www.centos.org/download/
 - Creating VM and installing with minimal install option
@@ -50,7 +50,7 @@ Installation folder contains 3 sub folders for diffirent setup
 Each folder will have ```00.config.sh``` which contains some parameters. Review file content, change all related parameters to actual value and set ```READY=true``` before doing further steps.
 
 # PART II: SETING UP CONJUR - K8S LAB
-# 1. Setting up K8s standalone cluster
+# 2.1. Setting up K8s standalone cluster
 ## **Step2.1.1: Installing cri-o**
 Login to VM as root, running below command to install cri-o
 ```
@@ -96,7 +96,7 @@ Open browser and login to k8s dashboard using previous copied token
 ```
 https://<VMIP>:30443
 ```
-# 2. Setting up podman and conjur environment
+# 2.2. Setting up podman and conjur environment
 ## **Step2.2.1: Reviewing 00.config.sh**
 Login to VM as root, edit the 00.config.sh
 ```
@@ -158,3 +158,44 @@ cd /opt/lab/conjur-k8s-lab/2.conjur-setup
 Login to k8s dashboard, select namespace conjur and checking for follower deployment and pod status
 Login to conjur GUI, go to ```seting>Conjur Cluster``` to check for follower status
 Open browser and go to ```https://<VM-IP>:30444/info``` to check for follower detai info
+
+# PART III: TESTING CITYAPP OPTIONS
+# 3.1. Building cityapp image
+## **Step3.1.1: Reviewing 00.config.sh**
+Login to VM as root, edit the 00.config.sh
+```
+cd /opt/lab/conjur-k8s-lab/3.cityapp-setup
+vi 00.config.sh
+```
+Changed all related parameters such as IP, domain... and set ```READY=true``` to continue
+## **Step3.1.2: Building image**
+Login to VM as root, review the cityapp image detail on /opt/lab/conjur-k8s-lab/3.cityapp-setup/build
+- Dockerfile: contain building info
+- index.php: detail code of cityapp web application
+Running below command to build cityapp image
+```
+cd /opt/lab/conjur-k8s-lab/3.cityapp-setup
+./01.building-cityapp-image.sh
+```
+Using command ```podman image ls``` to make sure cityapp image has been build and put at localhost/cityapp
+# 3.2. Running cityapp-hardcode
+Login to VM as root, running below command to deploy cityapp-hardcode
+```
+cd /opt/lab/conjur-k8s-lab/3.cityapp-setup
+./02.running-cityapp-hardcode.sh
+```
+# 3.3. Running cityapp-conjurtok8sfile
+Login to VM as root, running below command to deploy conjurtok8sfile
+```
+cd /opt/lab/conjur-k8s-lab/3.cityapp-setup
+./03.running-cityapp-conjurtok8sfile.sh
+```
+# 3.4. Running cityapp-conjurtok8ssecret
+Login to VM as root, running below command to deploy conjurtok8ssecret
+```
+cd /opt/lab/conjur-k8s-lab/3.cityapp-setup
+./04.running-cityapp-conjurtok8ssecret.sh
+```
+# PART IV: FINAL TESTING
+Login to conjur GUI, change the value of secret ```test/host1/user```, ``` test/host1/pass``` and wait for 30 seconds. Refeshing the cityapp webpages to see if the credential values can be changed
+# LAB END
