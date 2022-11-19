@@ -46,4 +46,5 @@ Installation folder contains 3 sub folders for diffirent setup
 - 1.k8s-setup: scripts to setup k8s standalone cluster environment
 - 2.conjur-setp: scripts to install podman, mysql, conjur master containers and deploying conjur follower in k8s
 - 3.cityapp-setup: scripts to deploys different types of cityapp application
+
 Each folder will have ```00.config.sh``` which contains some parameters. Review file content, change all related parameters to actual value and set ```READY=true``` before doing further steps.
