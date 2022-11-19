@@ -20,7 +20,7 @@ Created by <huy.do@cyberark.com>
  *The IP addresses in this document are using from current lab environment. Please replace the **172.16.100.109** by your actual **VM IP**’s
     
 # 2. VMs Preparation
-## **Step1.1: Preparing CentOS Stream 9**
+## **Step1.2.1: Preparing CentOS Stream 9**
 - CentOS Stream 9 can be downloaded at https://www.centos.org/download/
 - Creating VM and installing with minimal install option
 - Checking for IP, DNS and Internet connection
@@ -28,7 +28,7 @@ Created by <huy.do@cyberark.com>
 ```
 yum -y install git
 ```
-## **Step1.2: Copying files for setting up**
+## **Step1.2.2: Copying files for setting up**
 Login to VM as root, creating folder for setup_files
 ```
 mkdir -p /opt/lab/setup_files
@@ -36,7 +36,7 @@ chmod 777 /opt/lab/setup_files
 ```
 Copy conjur appliance image file to setup_files folder
 - Conjur docker image: conjur-appliance-Rls-12.7.tar.gz
-## **Step1.3: Cloning git hub repo**
+## **Step1.2.3: Cloning git hub repo**
 Login to VM as root and running below command
 ```
 cd /opt/lab
@@ -48,3 +48,16 @@ Installation folder contains 3 sub folders for diffirent setup
 - 3.cityapp-setup: scripts to deploys different types of cityapp application
 
 Each folder will have ```00.config.sh``` which contains some parameters. Review file content, change all related parameters to actual value and set ```READY=true``` before doing further steps.
+
+# PART II: SETING UP CONJUR - K8S LAB
+# 1. Setting up K8s standalone cluster
+## **Step2.1.1: Installing cri-o**
+Login to VM as root, running below command to install cri-o
+```
+cd /opt/lab/conjur-k8s-lab/1.k8s-setup
+./01.installing-cri-o.sh
+```
+Checking crio service after done to make sure crio is up and run
+```
+service crio status
+```
