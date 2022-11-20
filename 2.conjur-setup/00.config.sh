@@ -5,6 +5,7 @@ READY=false
 
 #IP addresses of conjur and crc VM
 CONJUR_IP=172.16.100.109
+LAB_IP=$CONJUR_IP
 LAB_DOMAIN=demo.local
 LAB_CONJUR_ADMIN_PW=ChangeMe123!
 LAB_CONJUR_ACCOUNT=DEMO
