@@ -34,8 +34,10 @@ Comments and question, please send to <huy.do@cyberark.com>
 ## **Step1.2.1: Preparing CentOS Stream 9**
 CentOS Stream 9 can be downloaded at https://www.centos.org/download/
 ![policy](./images/01.centos-download.png)
+
 Creating VM and installing with minimal install option
 ![policy](./images/02.minimal-install.png)
+
 - Checking for IP, DNS and Internet connection
 - Installing git tool
 ```
