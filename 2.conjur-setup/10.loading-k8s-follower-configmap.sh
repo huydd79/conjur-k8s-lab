@@ -6,7 +6,7 @@ if [[ "$READY" != true ]]; then
     exit
 fi
 
-CONJUR_CERT="$(openssl s_client -showcerts -connect  conjur-master.demo.local:443 </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p')"
+CONJUR_CERT="$(openssl s_client -showcerts -connect  conjur-master.$LAB_DOMAIN:443 </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p')"
 CONJUR_MASTER_URL=https://conjur-master.$LAB_DOMAIN
 AUTHENTICATOR_ID=k8s
 CONJUR_ACCOUNT=$LAB_CONJUR_ACCOUNT
