@@ -118,7 +118,7 @@ https://<VMIP>:30443
 
 Select kube-system namespace and review some of the data in dashboard
 
-![k8sd1](./images/03.k8s-dashboard2.png?)
+![k8sd2](./images/04.k8s-dashboard2.png?)
 
 # 2.2. Setting up podman and conjur environment
 ## **Step2.2.1: Reviewing 00.config.sh**
