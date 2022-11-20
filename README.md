@@ -103,7 +103,7 @@ kubectl get all
 Login to VM as root, running below command to install kubernetes dashboard web GUI
 ```
 cd /opt/lab/conjur-k8s-lab/1.k8s-setup
-.04.installing-k8s-dashboard.sh
+./04.installing-k8s-dashboard.sh
 ```
 Copy the value of service account token to notepad for later usage. Checking status of k8s dashboard deployment
 ```
