@@ -79,13 +79,13 @@ Checking crio service after done to make sure crio is up and run
 service crio status
 ```
 ## **Step2.1.2: Installing kubelet kubeadm and kubectl**
-Login to VM as root, running below command to kubelet and tools
+Login to VM as root, running below command to install kubelet and tools
 ```
 cd /opt/lab/conjur-k8s-lab/1.k8s-setup
 ./02.installing-k8s-and-tools.sh
 ```
 ## **Step2.1.3: Setting up cluster and networking**
-Login to VM as root, running below command to kubelet and tools
+Login to VM as root, running below command to create stand alone cluster and configure networking
 ```
 cd /opt/lab/conjur-k8s-lab/1.k8s-setup
 ./03.creating-k8s-cluster.sh 
