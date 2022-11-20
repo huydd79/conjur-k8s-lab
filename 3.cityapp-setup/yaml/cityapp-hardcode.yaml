@@ -46,7 +46,7 @@ spec:
         name: cityapp
         env:
           - name: DBADDR
-            value: mysql.demo.local
+            value: mysql.{LAB_DOMAIN}
           - name: DBUSER
             value: cityapp
           - name: DBPASS
