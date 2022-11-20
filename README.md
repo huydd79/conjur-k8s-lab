@@ -183,8 +183,34 @@ cd /opt/lab/conjur-k8s-lab/2.conjur-setup
 ./08.enable-k8s-jwt-authenticator.sh
 ./09.loading-conjur-jwt-data.sh 
 ```
-Using ```curl -k https://conjur-master.demo.local/info``` to see the authenticaion options that are allowed.
+Using ```curl -k https://conjur-master.demo.local/info``` to see the authenticaion options that are enabled.
+```
+...
+  "authenticators": {
+    "installed": [
+      "authn",
+      "authn-azure",
+      "authn-gcp",
+      "authn-iam",
+      "authn-jwt",
+      "authn-k8s",
+      "authn-ldap",
+      "authn-oidc"
+    ],
+    "configured": [
+      "authn",
+      "authn-jwt/k8s"
+    ],
+    "enabled": [
+      "authn",
+      "authn-jwt/k8s"
+...    
+```
+
 Using browser, login to conjur GUI to review the demo data and content
+
+![conjurgui](./images/06.conjur-data.png?)
+
 ## **Step2.2.7: Deploying conjur follower on k8s**
 Login to VM as root and running below commands
 ```
