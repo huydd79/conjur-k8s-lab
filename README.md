@@ -291,7 +291,11 @@ Using k8s dashboard GUI and select cityapp namespace to see more detail on citya
 
 # 3.3. Running cityapp-conjurtok8sfile
 Application cityapp-conjurtok8sfile is configured with sidecar container (secrets-provider-for-k8s) which is run in the same pod with cityapp. The sidecar will connect to conjur follower pod, using jwt authentication method and check for database credentials. Information will then put in ```/conjur/secret``` folder and link to cityapp's ```/conjur``` folder using shared volume. The architecture of this method is described as below CyberArk document link.
+
 [Secret Provider: Push to File mode](https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-DAP/Latest/en/Content/Integrations/k8s-ocp/cjr-k8s-secrets-provider-ic-p2f.htm?TocPath=Integrations%7COpenShift%2FKubernetes%7CSet%20up%20applications%7CSecrets%20Provider%20for%20Kubernetes%7CInit%20container%7C_____2 "Push to file")
+
+![push2file](https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-DAP/Latest/en/Content/Images/Integrations/k8s-ocp/cjr-sp-sidecar-p2f.png)
+
 Login to VM as root, running below command to deploy conjurtok8sfile
 ```
 cd /opt/lab/conjur-k8s-lab/3.cityapp-setup
