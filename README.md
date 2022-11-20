@@ -57,7 +57,7 @@ Copy conjur appliance image file to setup_files folder
 Login to VM as root and running below command
 ```
 cd /opt/lab
-git clone git clone https://github.com/huydd79/conjur-k8s-lab
+git clone https://github.com/huydd79/conjur-k8s-lab
 ```
 Installation folder contains 3 sub folders for diffirent setup
 - 1.k8s-setup: scripts to setup k8s standalone cluster environment
