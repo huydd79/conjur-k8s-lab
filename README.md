@@ -281,26 +281,47 @@ Login to VM as root, running below command to deploy cityapp-hardcode
 cd /opt/lab/conjur-k8s-lab/3.cityapp-setup
 ./02.running-cityapp-hardcode.sh
 ```
-Using browser and access to ```https://<VM-IP>:30080``` to open cityapp-hardcode webapp for the result
+Using browser and access to ```http://<VM-IP>:30080``` to open cityapp-hardcode webapp for the result
 
-![conjurgui](./images/09.cityapp-hardcode.png)
+![cityapp](./images/09.cityapp-hardcode.png)
 
 Using k8s dashboard GUI and select cityapp namespace to see more detail on cityapp-hardcode pod. This application is being run with database credentials from environment parameters.
 
-![conjurgui](./images/10.cityapp-hardcode-pod.png)
+![cityapp](./images/10.cityapp-hardcode-pod.png)
 
 # 3.3. Running cityapp-conjurtok8sfile
-Application cityapp-conjurtok8sfile is configured with sidecar container (secrets-provider-for-k8s) which is run in the same pod with cityapp. The sidecar will connect to conjur follower pod, using jwt authentication method and check for database credentials. Information will then put in ```/conjur/secret``` folder and link to cityapp's ```/conjur``` folder using shared volume. The architecture of this method is described as below CyberArk document link.
+Application cityapp-conjurtok8sfile is configured with sidecar container (secrets-provider-for-k8s) which is run in the same pod with cityapp. The sidecar will connect to conjur follower pod, using jwt authentication method and check for database credentials. Information will then be written into ```/conjur/secret``` folder and linked to cityapp's ```/conjur``` folder using shared volume. The architecture of this method is described at below CyberArk document link.
 
 [Secret Provider: Push to File mode](https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-DAP/Latest/en/Content/Integrations/k8s-ocp/cjr-k8s-secrets-provider-ic-p2f.htm?TocPath=Integrations%7COpenShift%2FKubernetes%7CSet%20up%20applications%7CSecrets%20Provider%20for%20Kubernetes%7CInit%20container%7C_____2 "Push to file")
 
 ![push2file](https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-DAP/Latest/en/Content/Images/Integrations/k8s-ocp/cjr-sp-sidecar-p2f.png)
 
-Login to VM as root, running below command to deploy conjurtok8sfile
+To deploy conjurtok8sfile application, login to VM as root, running below command
 ```
 cd /opt/lab/conjur-k8s-lab/3.cityapp-setup
 ./03.running-cityapp-conjurtok8sfile.sh
 ```
+
+Going to k8s dashboard GUI, select cityapp namespace and open cityapp-conjurtok8sfile 's sidecar container log, the detail of authentication result will be shown as below
+```
+INFO:  2022/11/20 17:29:18.217628 main.go:62: CSPFK008I CyberArk Secrets Provider for Kubernetes v1.4.4-5f8218a starting up
+INFO:  2022/11/20 17:29:18.219453 main.go:226: CSPFK014I Authenticator setting DEBUG provided by environment
+INFO:  2022/11/20 17:29:18.219480 configuration_factory.go:82: CAKC070 Chosen "authn-jwt" configuration
+INFO:  2022/11/20 17:29:18.219521 main.go:217: CSPFK014I Authenticator setting CONTAINER_MODE provided by annotation conjur.org/container-mode
+INFO:  2022/11/20 17:29:18.219529 main.go:226: CSPFK014I Authenticator setting DEBUG provided by environment
+INFO:  2022/11/20 17:29:18.219535 main.go:217: CSPFK014I Authenticator setting JWT_TOKEN_PATH provided by annotation conjur.org/jwt-token-path
+INFO:  2022/11/20 17:29:18.219542 main.go:226: CSPFK014I Authenticator setting CONJUR_AUTHN_LOGIN provided by environment
+INFO:  2022/11/20 17:29:18.219587 authenticator_factory.go:34: CAKC075 Chosen "authn-jwt" flow
+INFO:  2022/11/20 17:29:18.327256 authenticator.go:63: CAKC066 Performing authn-jwt
+INFO:  2022/11/20 17:29:18.499870 authenticator.go:83: CAKC035 Successfully authenticated
+INFO:  2022/11/20 17:29:18.499908 conjur_secrets_retriever.go:74: CSPFK003I Retrieving following secrets from DAP/Conjur: [test/host1/host test/host1/user test/host1/pass]
+INFO:  2022/11/20 17:29:18.499934 conjur_client.go:21: CSPFK002I Creating DAP/Conjur client
+INFO:  2022/11/20 17:29:18.560742 provide_conjur_secrets.go:126: CSPFK015I DAP/Conjur Secrets pushed to shared volume successfully
+```
+
+Using browser and go to ```http://<VM-IP>:30081``` to see the result
+![cityapp](./images/11.cityapp-conjurtok8sfile.png)
+
 # 3.4. Running cityapp-conjurtok8ssecret
 Login to VM as root, running below command to deploy conjurtok8ssecret
 ```
