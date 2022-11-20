@@ -34,7 +34,7 @@ Comments and question, please send to <huy.do@cyberark.com>
 ## **Step1.2.1: Preparing CentOS Stream 9**
 CentOS Stream 9 can be downloaded at https://www.centos.org/download/
 
-![centos](./images/01.centos-download.png?align=center)
+![centos](./images/01.centos-download.png)
 
 Creating VM and installing with minimal install option
 
@@ -114,11 +114,11 @@ Open browser and login to k8s dashboard using previous copied token
 https://<VMIP>:30443
 ```
 
-![k8sd1](./images/03.k8s-dashboard1.png?)
+![k8sd1](./images/03.k8s-dashboard1.png)
 
 Select kube-system namespace and review some of the data in dashboard
 
-![k8sd2](./images/04.k8s-dashboard2.png?)
+![k8sd2](./images/04.k8s-dashboard2.png)
 
 # 2.2. Setting up podman and conjur environment
 ## **Step2.2.1: Reviewing 00.config.sh**
@@ -162,7 +162,7 @@ Using browser and put in conjur master URL ```https://<VMIP>```, login using use
 https://<VM-IP>/
 ```
 
-![conjurgui](./images/05.conjur-gui.png?)
+![conjurgui](./images/05.conjur-gui.png)
 
 ## **Step2.2.5: Installing conjur CLI**
 Login to VM as root and running below commands
@@ -213,7 +213,7 @@ Using browser, login to conjur GUI to review the demo data and content. Make sur
 - conjur/authn-jwt/k8s/issuer: jwt issuer, should be ```https://kubernetes.default.svc.cluster.local``` by default
 - conjur/authn-jwt/k8s/public-keys: k8s public key information, should be in json format.
 
-![conjurgui](./images/06.conjur-data.png?)
+![conjurgui](./images/06.conjur-data.png)
 
 If any of above parameters is emply, please run script ```./09.loading-conjur-jwt-data.sh``` again.
 
@@ -226,13 +226,34 @@ cd /opt/lab/conjur-k8s-lab/2.conjur-setup
 ```
 Login to k8s dashboard, select namespace conjur and checking for follower deployment and pod status
 
-![conjurgui](./images/07.k8s-follower-data.png?)
+![conjurgui](./images/07.k8s-follower-data.png)
 
 Login to conjur GUI, go to ```seting>Conjur Cluster``` to check for follower status
-![conjurgui](./images/08.conjur-follower.png?)
+![conjurgui](./images/08.conjur-follower.png)
 
 Using command ```curl -k https://<VM-IP>:30444/info``` to check for follower detai info
-
+```
+...
+  "authenticators": {
+    "installed": [
+      "authn",
+      "authn-azure",
+      "authn-gcp",
+      "authn-iam",
+      "authn-jwt",
+      "authn-k8s",
+      "authn-ldap",
+      "authn-oidc"
+    ],
+    "configured": [
+      "authn",
+      "authn-jwt/k8s"
+    ],
+    "enabled": [
+      "authn-jwt/k8s"
+    ]
+...
+```
 
 # PART III: TESTING CITYAPP OPTIONS
 # 3.1. Building cityapp image
@@ -252,14 +273,25 @@ Running below command to build cityapp image
 cd /opt/lab/conjur-k8s-lab/3.cityapp-setup
 ./01.building-cityapp-image.sh
 ```
-Using command ```podman image ls``` to make sure cityapp image has been build and put at localhost/cityapp
+Using command ```podman image ls | grep cityapp``` to make sure cityapp image has been build and put at localhost/cityapp
+
 # 3.2. Running cityapp-hardcode
 Login to VM as root, running below command to deploy cityapp-hardcode
 ```
 cd /opt/lab/conjur-k8s-lab/3.cityapp-setup
 ./02.running-cityapp-hardcode.sh
 ```
+Using browser and access to ```https://<VM-IP>:30080``` to open cityapp-hardcode webapp for the result
+
+![conjurgui](./images/09.cityapp-hardcode.png)
+
+Using k8s dashboard GUI and select cityapp namespace to see more detail on cityapp-hardcode pod. This application is being run with database credentials from environment parameters.
+
+![conjurgui](./images/10.cityapp-hardcode-pod.png)
+
 # 3.3. Running cityapp-conjurtok8sfile
+Application cityapp-conjurtok8sfile is configured with sidecar container (secrets-provider-for-k8s) which is run in the same pod with cityapp. The sidecar will connect to conjur follower pod, using jwt authentication method and check for database credentials. Information will then put in ```/conjur/secret``` folder and link to cityapp's ```/conjur``` folder using shared volume. The architecture of this method is described as below CyberArk document link.
+[Secret Provider: Push to File mode](https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-DAP/Latest/en/Content/Integrations/k8s-ocp/cjr-k8s-secrets-provider-ic-p2f.htm?TocPath=Integrations%7COpenShift%2FKubernetes%7CSet%20up%20applications%7CSecrets%20Provider%20for%20Kubernetes%7CInit%20container%7C_____2 "Push to file")
 Login to VM as root, running below command to deploy conjurtok8sfile
 ```
 cd /opt/lab/conjur-k8s-lab/3.cityapp-setup
