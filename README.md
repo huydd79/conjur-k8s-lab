@@ -15,7 +15,7 @@ Comments and question, please send to <huy.do@cyberark.com>
 # PART I: SETING UP ENVIRONMENT
 # 1.1. LAB Prerequisites
 - ESXI server or VMWorkstation to create standalone lab VM as below:
-  - 8GB RAM (minimum), recommended 16GB
+  - 12GB RAM (minimum), recommended 16GB
   - 2 vCore CPU
   - 60GB HDD
   - CentOS Stream 9 base OS (Minimal Install)
@@ -207,20 +207,32 @@ Using ```curl -k https://conjur-master.demo.local/info``` to see the authenticai
 ...    
 ```
 
-Using browser, login to conjur GUI to review the demo data and content
+Using browser, login to conjur GUI to review the demo data and content. Make sure all authn-jwt/k8s secrets got values
+- conjur/authn-jwt/k8s/audience: jwt audience, should be ```cybrdemo``` by default.
+- conjur/authn-jwt/k8s/identity-path: jwt path for identity, should be ```jwt-apps/k8s``` by default.
+- conjur/authn-jwt/k8s/issuer: jwt issuer, should be ```https://kubernetes.default.svc.cluster.local``` by default
+- conjur/authn-jwt/k8s/public-keys: k8s public key information, should be in json format.
 
 ![conjurgui](./images/06.conjur-data.png?)
+
+If any of above parameters is emply, please run script ```./09.loading-conjur-jwt-data.sh``` again.
 
 ## **Step2.2.7: Deploying conjur follower on k8s**
 Login to VM as root and running below commands
 ```
 cd /opt/lab/conjur-k8s-lab/2.conjur-setup
 ./10.loading-k8s-follower-configmap.sh 
-11.deploying-follower-k8s.sh 
+./11.deploying-follower-k8s.sh 
 ```
 Login to k8s dashboard, select namespace conjur and checking for follower deployment and pod status
+
+![conjurgui](./images/07.k8s-follower-data.png?)
+
 Login to conjur GUI, go to ```seting>Conjur Cluster``` to check for follower status
-Open browser and go to ```https://<VM-IP>:30444/info``` to check for follower detai info
+![conjurgui](./images/08.conjur-follower.png?)
+
+Using command ```curl -k https://<VM-IP>:30444/info``` to check for follower detai info
+
 
 # PART III: TESTING CITYAPP OPTIONS
 # 3.1. Building cityapp image
