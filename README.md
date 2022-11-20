@@ -34,11 +34,11 @@ Comments and question, please send to <huy.do@cyberark.com>
 ## **Step1.2.1: Preparing CentOS Stream 9**
 CentOS Stream 9 can be downloaded at https://www.centos.org/download/
 
-![centos-download](./images/01.centos-download.png?align=center)
+![centos](./images/01.centos-download.png?align=center)
 
 Creating VM and installing with minimal install option
 
-![policy](./images/02.minimal-install.png)
+![minimal](./images/02.minimal-install.png)
 
 - Checking for IP, DNS and Internet connection
 - Installing git tool
@@ -113,6 +113,13 @@ Open browser and login to k8s dashboard using previous copied token
 ```
 https://<VMIP>:30443
 ```
+
+![k8sd1](./images/03.k8s-dashboard1.png?)
+
+Select kube-system namespace and review some of the data in dashboard
+
+![k8sd1](./images/03.k8s-dashboard2.png?)
+
 # 2.2. Setting up podman and conjur environment
 ## **Step2.2.1: Reviewing 00.config.sh**
 Login to VM as root, edit the 00.config.sh
