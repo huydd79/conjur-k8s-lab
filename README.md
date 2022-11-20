@@ -100,7 +100,7 @@ service kubelet status
 kubectl get all
 ```
 ## **Step2.1.4: Setting up kubernetes dashboard**
-Login to VM as root, running below command to kubelet and tools
+Login to VM as root, running below command to install kubernetes dashboard web GUI
 ```
 cd /opt/lab/conjur-k8s-lab/1.k8s-setup
 .04.installing-k8s-dashboard.sh
