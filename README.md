@@ -151,10 +151,18 @@ cd /opt/lab/conjur-k8s-lab/2.conjur-setup
 ./04.starting-conjur-container.sh
 ./05.configuring-conjur-master.sh
 ```
-Using command ```podman image ls``` to make sure that image is loaded correctly
+Using command ```ppodman image ls | grep conjur``` to make sure that image is loaded correctly
+
 Using command ```podman container ls``` to make sure that conjur1 container is up and running
+
 Using command ```curl -k https://conjur-master.demo.local/info``` to check conjur master status
-Using browser and put in conjur master URL ```https://<VMIP>```, login using user admin and password is set in ```00.config.sh``` file
+
+Using browser and put in conjur master URL ```https://<VMIP>```, login using user admin and password was set in ```00.config.sh``` file
+```
+https://<VM-IP>/
+```
+![conjurgui](./images/05.conjur-gui.png?)
+
 ## **Step2.2.5: Installing conjur CLI**
 Login to VM as root and running below commands
 ```
