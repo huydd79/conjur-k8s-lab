@@ -10,7 +10,7 @@ APP_NAME="cityapp-conjurtok8ssecret"
 YML_FILE="yaml/$APP_NAME.yaml"
 YML_TEMP="/tmp/$APP_NAME.yaml"
 CONJUR_FOLLOWER_URL="https://follower.conjur.svc.cluster.local"
-CONJUR_CERT="$(openssl s_client -showcerts -connect  conjur-master.demo.local:443 </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p')"
+CONJUR_CERT="$(openssl s_client -showcerts -connect  conjur-master.$LAB_DOMAIN:443 </dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p')"
 
 CONJUR_AUTHN_URL=$CONJUR_FOLLOWER_URL/authn-jwt/k8s
 set -x
