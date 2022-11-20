@@ -161,6 +161,7 @@ Using browser and put in conjur master URL ```https://<VMIP>```, login using use
 ```
 https://<VM-IP>/
 ```
+
 ![conjurgui](./images/05.conjur-gui.png?)
 
 ## **Step2.2.5: Installing conjur CLI**
@@ -169,7 +170,11 @@ Login to VM as root and running below commands
 cd /opt/lab/conjur-k8s-lab/2.conjur-setup
 ./06.installing-conjur-cli.sh
 ```
-Providing admin password for conjur cli configuration. Using command ```conjur whoami``` to doublecheck.
+
+Enter ```yes``` for ```Trust this certificate``` question and providing admin password for conjur cli configuration. 
+
+Using command ```conjur whoami``` to doublecheck the result.
+
 ## **Step2.2.6: Loading demo data and enable conjur-k8s-jwt authentication**
 Login to VM as root and running below commands
 ```
