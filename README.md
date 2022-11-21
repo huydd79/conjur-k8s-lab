@@ -9,7 +9,8 @@ This project will help you to quickly build up the standalone, single VM lab env
 All setup, installing and configuration steps are all put in sequence of scripts to make the setup process quicker and easier
 
 Comments and question, please send to <huy.do@cyberark.com>
-Thanks and kudos to @Joe Tan (joe.tan@cyberark.com) for the detail of installing and configuration at https://github.com/joetanx
+
+Thanks and kudos to ###@Joe Tan (joe.tan@cyberark.com)### for the detail of installing and configuration at https://github.com/joetanx
 
 ### Video on step by step setting up this LAB is at https://youtu.be/qiXBtv5R1z4
 
