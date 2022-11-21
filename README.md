@@ -356,10 +356,42 @@ INFO:  2022/11/20 17:51:05.683098 k8s_secrets_client.go:40: CSPFK006I Updating K
 INFO:  2022/11/20 17:51:05.690806 provide_conjur_secrets.go:184: CSPFK009I DAP/Conjur Secrets updated in Kubernetes successfully
 ```
 
-
 Using browser and go to ```http://<VM-IP>:30082``` to see the result
 ![cityapp](./images/12.cityapp-conjurtok8ssecret.png)
 
+# 3.5. Running cityapp-secretless
+Application cityapp-secretless is configured with sidecar container (secretless-broker) which is run in the same pod with cityapp. The sidecar will connect to conjur follower pod, using jwt authentication method and check for database credentials. After that, sidecar will host the mysql service and proxy-ing all mysql queries from main container to database. The ```cityapp``` main container will not need to know database credentials anymore.
+
+The architecture of this method is described at below CyberArk document link.
+[CyberArk Secret Provider: Secretless broker](https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-DAP/12.4/en/Content/Overview/scl_how_it_works.htm?TocPath=Fundamentals%7CSecretless%20pattern%7C_____2 "Secretless broker")
+
+![secretless](https://github.com/joetanx/conjur-k8s/blob/main/images/architectureCityappSecretless.png)
+
+Login to VM as root, running below command to deploy cityapp-secretless
+```
+cd /opt/lab/conjur-k8s-lab/3.cityapp-setup
+./05.running-cityapp-secretless.sh 
+```
+
+In k8s dashboard's GUI, checking for sidecar's log in secretless pod, the detail of conjur jwt authentication and secret pushing will be shown as below
+```
+2022/11/21 01:02:02 Secretless v1.7.14-552c75c8 starting up...
+2022/11/21 01:02:02 Initializing health check on :5335...
+2022/11/21 01:02:02 Initialization of health check done. You can access the endpoint at `/live` and `/ready`.
+2022/11/21 01:02:02 [WARN]  Plugin hashes were not provided - tampering will not be detectable!
+2022/11/21 01:02:02 Trying to load configuration file: /etc/secretless/cityapp-secretless-cm.yaml
+2022/11/21 01:02:02 WARN: v1 configuration is now deprecated and will be removed in a future release
+2022/11/21 01:02:02 [INFO]  Configuration found. Loading...
+2022/11/21 01:02:02 [INFO]  Validating config against available plugins: ssh,ssh-agent,pg,mysql,mssql,basic_auth,conjur,generic_http,aws
+2022/11/21 01:02:02 [INFO]  Starting TCP listener on 0.0.0.0:3306...
+2022/11/21 01:02:02 [INFO]  cityapp-mysql-handler: Starting service
+2022/11/21 01:02:02 Registering reload signal listeners...
+```
+
+Using browser and go to ```http://<VM-IP>:30083``` to see the result
+![cityapp](./images/13.cityapp-secretless.png)
+
+Now you can see the cityapp main container is accessing database at localhost, using empty username and password.
 
 # PART IV: FINAL TESTING
 Login to conjur GUI, change the value of secret ```test/host1/user```, ``` test/host1/pass``` and wait for 30 seconds. Refeshing the cityapp webpages to see if the credential values can be changed
