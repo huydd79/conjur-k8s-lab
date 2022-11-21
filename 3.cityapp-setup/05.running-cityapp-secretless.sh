@@ -27,9 +27,6 @@ kubectl -n cityapp create configmap apps-cm \
 kubectl -n cityapp get configmap | grep -q cityapp-secretless-cm && kubectl -n cityapp delete configmap cityapp-secretless-cm
 kubectl -n cityapp create configmap cityapp-secretless-cm --from-file=yaml/cityapp-secretless-cm.yaml
 
-#Update RBAC
-kubectl -n cityapp apply -f yaml/secretless-rbac.yaml
-
 #Delete current deployment
 kubectl -n cityapp get deployments | grep -q $APP_NAME
 if [ $? -eq 0 ]; then
