@@ -153,7 +153,7 @@ cd /opt/lab/conjur-k8s-lab/2.conjur-setup
 ./04.starting-conjur-container.sh
 ./05.configuring-conjur-master.sh
 ```
-Using command ```ppodman image ls | grep conjur``` to make sure that image is loaded correctly
+Using command ```podman image ls | grep conjur``` to make sure that image is loaded correctly
 
 Using command ```podman container ls``` to make sure that conjur1 container is up and running
 
