@@ -8,6 +8,22 @@ if [[ "$READY" != true ]]; then
 fi
 
 set -x
+
+#Delete current deployment
+kubectl -n conjur get deployments | grep -q follower
+if [ $? -eq 0 ]; then
+    kubectl -n conjur delete deployment follower
+    ret=0
+    until [ $ret -ne 0 ]
+    do
+        kubectl -n conjur get deployments | grep -q follower
+        ret=$?
+        echo "Waiting deployment is deleted..."
+        sleep 1
+    done
+    
+fi
+
 cp follower/follower.yaml /tmp/follower.yaml
 sed -i "s/CONJUR_IP/$CONJUR_IP/g" /tmp/follower.yaml
 sed -i "s/LAB_DOMAIN/$LAB_DOMAIN/g" /tmp/follower.yaml
