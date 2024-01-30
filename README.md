@@ -183,7 +183,6 @@ Login to VM as root and running below commands
 cd /opt/lab/conjur-k8s-lab/2.conjur-setup
 ./07.loading-demo-data.sh
 ./08.enable-k8s-jwt-authenticator.sh
-./09.loading-conjur-jwt-data.sh 
 ```
 Using ```curl -k https://conjur-master.demo.local/info``` to see the authenticaion options that are enabled.
 ```
@@ -208,7 +207,11 @@ Using ```curl -k https://conjur-master.demo.local/info``` to see the authenticai
       "authn-jwt/k8s"
 ...    
 ```
-
+Running below command to load jwt data to conjur environment
+```
+cd /opt/lab/conjur-k8s-lab/2.conjur-setup
+./09.loading-conjur-jwt-data.sh 
+```
 Using browser, login to conjur GUI to review the demo data and content. Make sure all authn-jwt/k8s secrets got values
 - conjur/authn-jwt/k8s/audience: jwt audience, should be ```cybrdemo``` by default.
 - conjur/authn-jwt/k8s/identity-path: jwt path for identity, should be ```jwt-apps/k8s``` by default.
