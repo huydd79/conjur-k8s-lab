@@ -20,7 +20,7 @@ podman run --name $node_name \
   --log-driver json-file \
   --log-opt max-size=1000m \
   --log-opt max-file=3 \
-  localhost/conjur-appliance:$conjur_version
+  registry.tld/conjur-appliance:$conjur_version
 
 grep -q "conjur-master.$LAB_DOMAIN" /etc/hosts || echo "$CONJUR_IP conjur1.$LAB_DOMAIN conjur-master.$LAB_DOMAIN" >> /etc/hosts
 
