@@ -42,7 +42,7 @@ spec:
         - "conjur-master.LAB_DOMAIN"
       containers:
       - name: conjur-appliance
-        image: localhost/conjur-appliance:CONJUR_VERSION
+        image: registry.tld/conjur-appliance:CONJUR_VERSION
         command: ["/tmp/seedfile/start-follower.sh"]
         imagePullPolicy: IfNotPresent
         env:
