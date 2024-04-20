@@ -22,7 +22,7 @@ Thanks and kudos to @Joe Tan (joe.tan@cyberark.com) for the detail of installing
   - 60GB HDD
   - CentOS Stream 9 base OS (Minimal Install)
     - Hostname: k8s.demo.local
-    - LAN IP (eg 172.16.100.109/24)
+    - LAN IP (eg 172.16.100.15/24)
     - Internet connection to do yum updating and packages installation
 - Conjur appliance images & utilities:
   - Contact CyberArk local representative for following images and tools
