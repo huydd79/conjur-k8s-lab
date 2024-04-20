@@ -14,7 +14,7 @@ CONJUR_SEED_FILE_URL=$CONJUR_MASTER_URL/configuration/$CONJUR_ACCOUNT/seed/follo
 
 set -x
 kubectl get namespace | grep -q conjur || kubectl create namespace conjur
-kubectl -n conjur get configmap | grep -q follower-cm && kubectl -n cityapp delete configmap follower-cm
+kubectl -n conjur get configmap | grep -q follower-cm && kubectl -n conjur delete configmap follower-cm
 kubectl -n conjur create configmap follower-cm \
     --from-literal CONJUR_ACCOUNT=$CONJUR_ACCOUNT \
     --from-literal CONJUR_APPLIANCE_URL=$CONJUR_MASTER_URL \
