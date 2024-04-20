@@ -7,5 +7,6 @@ if [[ "$READY" != true ]]; then
 fi
 
 set -x
-podman load -i $UPLOAD_DIR/$conjur_appliance_file
+# Loading conjur appliance image
+podman image ls | grep -q conjur-appliance && echo "Image conjur-appliance existed!!!" || podman load -i $UPLOAD_DIR/$conjur_appliance_file
 set +x
