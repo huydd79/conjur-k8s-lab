@@ -26,7 +26,7 @@ Thanks and kudos to @Joe Tan (joe.tan@cyberark.com) for the detail of installing
     - Internet connection to do yum updating and packages installation
 - Conjur appliance images & utilities:
   - Contact CyberArk local representative for following images and tools
-    - conjur-appliance-Rls-12.7.tar.gz
+    - conjur-appliance-Rls-v13.2.0.tar.gz
     - conjur-cli-rhel-8.tzr.gz
   - CyberArk softwares and related tools can be downloaded at https://cyberark-customers.force.com/mplace/s/#software
 
