@@ -9,7 +9,7 @@ fi
 set -x
 conjur -d policy load -f ./policies/authn-jwt-k8s.yaml -b root
 
-# TODO: check this command to see if can be removed:
+# TODO: check this command to see if can be removed: below possum rake command is for cert-based authn method, not related to jwt here
 #podman exec $node_name chpst -u conjur conjur-plugin-service possum rake authn_k8s:ca_init["conjur/authn-jwt/k8s"]
 podman exec -it $node_name sh -c 'grep -q "authn,authn-jwt/k8s" /opt/conjur/etc/conjur.conf || echo "CONJUR_AUTHENTICATORS=\"authn,authn-jwt/k8s\"\n">>/opt/conjur/etc/conjur.conf'
 podman exec $node_name sv restart conjur
