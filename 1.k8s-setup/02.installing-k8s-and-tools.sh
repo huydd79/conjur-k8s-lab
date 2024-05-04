@@ -3,6 +3,10 @@
 set -x
 
 #Disable swap and SELinux
+bk_file=/etc/fstab.bk.$(date +%s)
+mv /etc/fstab $bk_file
+cat $bk_file | grep -v swap > /etc/fstab
+echo "#$(cat $bk_file | grep swap)" >> /etc/fstab
 swapoff -a
 setenforce 0
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
