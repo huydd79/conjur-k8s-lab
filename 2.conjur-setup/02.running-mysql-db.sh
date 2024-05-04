@@ -6,7 +6,8 @@ if [[ "$READY" != true ]]; then
     exit
 fi
 
-db_dir=/var/run/mysql/db
+#db_dir=/var/run/mysql/db
+db_dir=$(pwd)/mysql/db
 set -x
 mkdir -p $db_dir 
 cp ./mysql/world.sql.gz $db_dir
