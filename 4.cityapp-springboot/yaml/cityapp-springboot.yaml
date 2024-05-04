@@ -46,7 +46,7 @@ spec:
         - "conjur-master.{LAB_DOMAIN}"
       containers:
       - name: cityapp
-        image: localhost/cityapp-springboot
+        image: docker.io/huydd79/cityapp-springboot
         imagePullPolicy: IfNotPresent
         env:
           - name: DB_HOST
