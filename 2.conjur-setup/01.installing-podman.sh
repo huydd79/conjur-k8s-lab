@@ -8,5 +8,7 @@ fi
 
 set -x
 yum -y install podman jq
+sudo systemctl enable podman-restart.service
+sudo systemctl start podman-restart.service
 
 set +x
