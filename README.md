@@ -370,7 +370,7 @@ Application cityapp-secretless is configured with sidecar container (secretless-
 The architecture of this method is described at below CyberArk document link.
 [CyberArk Secret Provider: Secretless broker](https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-DAP/12.4/en/Content/Overview/scl_how_it_works.htm?TocPath=Fundamentals%7CSecretless%20pattern%7C_____2 "Secretless broker")
 
-![secretless](https://github.com/joetanx/conjur-k8s/blob/main/images/architectureCityappSecretless.png)
+![secretless](./images/cj-secretless.png)
 
 Login to VM as root, running below command to deploy cityapp-secretless
 ```
