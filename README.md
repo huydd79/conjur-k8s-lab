@@ -332,7 +332,7 @@ Application cityapp-conjurtok8ssecret is configured with sidecar container (secr
 
 [CyberArk Secret Provider: Kubernetes Secret mode](https://docs.cyberark.com/Product-Doc/OnlineHelp/AAM-DAP/Latest/en/Content/Integrations/k8s-ocp/cjr-k8s-secrets-provider-ic.htm?tocpath=Integrations%7COpenShift%252FKubernetes%7CApp%20owner%253A%20Set%20up%20workloads%20in%20Kubernetes%7CSet%20up%20workloads%20(cert-based%20authn)%7CSecrets%20Provider%20for%20Kubernetes%7CInit%20container%252FSidecar%7C_____1 "Push to secret")
 
-![push2k8s](https://docs.cyberark.com/conjur-enterprise/latest/en/Content/Images/Integrations/k8s-ocp/cjr-sp-sidecar-k8s-secrets_thumb_0_0.png)
+![push2k8s](./images/cj-push2secrets.png)
 
 Login to VM as root, running below command to deploy conjurtok8ssecret
 ```
