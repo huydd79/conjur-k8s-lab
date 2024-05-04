@@ -35,7 +35,8 @@ exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
 EOF
 
 yum -y install kubelet kubeadm kubectl --disableexcludes=kubernetes
-systemctl enable --now kubelet
+systemctl enable kubelet
+systemctl start kubelet
 
 #Configure firewall
 firewall-cmd --add-port 2379-2380/tcp --permanent
