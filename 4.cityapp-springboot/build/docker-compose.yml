@@ -1,0 +1,23 @@
+version: '3'
+services:
+  app:
+    build: .
+    image: cityapp-conjur-springboot-plugin
+    environment:
+      CONJUR_APPLIANCE_URL: https://conjur-master.demo.local
+      CONJUR_ACCOUNT: DEMO
+      CONJUR_AUTHN_LOGIN: testuser01@test
+      CONJUR_AUTHN_API_KEY: <using_conjur_host_rotate-api-key_to_generate_api_key>
+      CONJUR_CERT_FILE: /conjur.pem
+      CONJUR_MAPPING_DB_HOST: test/host1/host
+      CONJUR_MAPPING_DB_USER: test/host1/user
+      CONJUR_MAPPING_DB_PASS: test/host1/pass
+      DB_HOST: 172.16.100.15
+      DB_PORT: 3306
+      DB_NAME: world
+      DB_USER: cityapp
+      DB_PASS: Cyberark1
+    volumes:
+      - ./conjur.pem:/conjur.pem
+    ports:
+      - 8080:8080

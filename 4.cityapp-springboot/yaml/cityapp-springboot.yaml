@@ -1,0 +1,85 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cityapp-springboot
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cityapp-springboot
+  labels:
+    app: cityapp-springboot
+spec:
+  ports:
+  - port: 8080
+    nodePort: 30088
+    name: http
+  selector:
+    app: cityapp-springboot
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: cityapp-springboot
+  name: cityapp-springboot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cityapp-springboot
+  template:
+    metadata:
+      labels:
+        app: cityapp-springboot
+      annotations:
+        conjur.org/container-mode: sidecar
+        conjur.org/secrets-refresh-interval: 30s
+    spec:
+      serviceAccountName: cityapp-springboot
+      hostAliases:
+      - ip: "{LAB_IP}"
+        hostnames:
+        - "mysql.{LAB_DOMAIN}"
+        - "conjur-master.{LAB_DOMAIN}"
+      containers:
+      - name: cityapp
+        image: localhost/cityapp-springboot
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: DB_HOST
+            value: 'null'        
+          - name: DB_USER
+            value: 'null'
+          - name: DB_PASS
+            value: 'null'
+          - name: DB_PORT
+            value: '3306'
+          - name: DB_NAME
+            value: world
+          - name: CONJUR_JWT_TOKEN_PATH
+            value: /var/run/secrets/tokens/jwt
+          - name: CONJUR_AUTHENTICATOR_ID
+            value: k8s
+          - name: CONJUR_MAPPING_DB_HOST
+            value: test/host1/host
+          - name: CONJUR_MAPPING_DB_USER
+            value: test/host1/user
+          - name: CONJUR_MAPPING_DB_PASS
+            value: test/host1/pass
+        envFrom:
+          - configMapRef:
+              name: apps-springboot-cm
+        volumeMounts:
+        - mountPath: /var/run/secrets/tokens
+          name: jwt-token
+      volumes:
+        - name: jwt-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: jwt
+                  expirationSeconds: 6000
+                  audience: cybrdemo                        
