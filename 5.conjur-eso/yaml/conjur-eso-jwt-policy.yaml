@@ -1,0 +1,17 @@
+- !policy
+  id: jwt-apps/k8s
+  owner: !group k8s-admins
+  body:
+  - !host
+    id: system:serviceaccount:external-secrets:k8s-eso
+    annotations:
+      authn-jwt/k8s/kubernetes.io/namespace: external-secrets
+      authn-jwt/k8s/kubernetes.io/serviceaccount/name: k8s-eso
+
+- !grant
+  roles:
+  - !group conjur/authn-jwt/k8s/apps
+  - !layer test/test_hosts
+  members:
+  - !host jwt-apps/k8s/system:serviceaccount:external-secrets:k8s-eso
+
