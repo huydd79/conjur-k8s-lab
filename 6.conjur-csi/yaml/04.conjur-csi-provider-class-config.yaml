@@ -1,0 +1,18 @@
+---
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: conjur-credentials
+spec:
+  provider: conjur
+  parameters:
+    conjur.org/configurationVersion: 0.1.0
+    account: {CONJUR_ACCOUNT}
+    applianceUrl: {CONJUR_URL}
+    authnId: authn-jwt/k8s-csi
+    identity: host/jwt-apps/k8s-csi/k8s-csi-host
+    secrets: |
+      - "dbaddr": "test/host1/host"
+      - "dbuser": "test/host1/user"
+      - "dbpass": "test/host1/pass"
+    sslCertificate: |

@@ -1,0 +1,41 @@
+- !policy
+  id: conjur/authn-jwt/k8s-csi
+  owner: !group admins
+  body:
+  - !webservice
+
+  - !variable public-keys
+  - !variable issuer
+
+  - !group apps
+  - !permit
+    role: !group apps
+    privilege: [ read, authenticate ]
+    resource: !webservice
+
+  - !webservice status
+
+  - !group operators
+  - !permit
+    role: !group operators
+    privilege: [ read ]
+    resource: !webservice status
+
+
+- !policy
+  id: jwt-apps/k8s-csi
+  owner: !group k8s-admins
+  body:
+  - !host
+    id: k8s-csi-host
+    annotations:
+      authn-jwt/k8s-csi/kubernetes.io/namespace: cityapp
+      #authn-jwt/k8s-csi/kubernetes.io/serviceaccount/name: k8s-csi
+
+- !grant
+  roles:
+  - !group conjur/authn-jwt/k8s-csi/apps
+  - !layer test/test_hosts
+  members:
+  - !host jwt-apps/k8s-csi/k8s-csi-host
+

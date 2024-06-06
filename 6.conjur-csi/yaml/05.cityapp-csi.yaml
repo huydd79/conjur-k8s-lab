@@ -1,0 +1,60 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: k8s-csi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cityapp-csi
+  labels:
+    app: cityapp-csi
+spec:
+  ports:
+  - port: 80
+    nodePort: 30086
+    name: http
+  selector:
+    app: cityapp-csi
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: cityapp-csi
+  name: cityapp-csi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cityapp-csi
+  template:
+    metadata:
+      labels:
+        app: cityapp-csi
+    spec:
+      serviceAccountName: k8s-csi
+      hostAliases:
+      - ip: "172.16.100.15"
+        hostnames:
+        - "mysql.demo.local"
+      containers:
+      - image: localhost/cityapp:php
+        imagePullPolicy: IfNotPresent
+        name: cityapp
+        volumeMounts:
+        - name: conjur-csi-volume
+          mountPath: /etc/secret-volume
+          readOnly: true
+        ports:
+        - containerPort: 80
+          name: http
+      volumes:
+      - name: conjur-csi-volume
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "conjur-credentials"
