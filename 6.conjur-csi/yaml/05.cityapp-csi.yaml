@@ -37,9 +37,9 @@ spec:
     spec:
       serviceAccountName: k8s-csi
       hostAliases:
-      - ip: "172.16.100.15"
+      - ip: "{LAB_IP}"
         hostnames:
-        - "mysql.demo.local"
+        - "mysql.{LAB_DOMAIN}"
       containers:
       - image: localhost/cityapp:php
         imagePullPolicy: IfNotPresent
