@@ -7,6 +7,6 @@ set -x
 
 kubectl -n external-secrets describe externalsecret conjur
 sleep 1
-kubectl -n $ESO_NS get secret conjur -o jsonpath="{.data}" | jq
+kubectl -n $ESO_NS get secret conjur-secret -o jsonpath="{.data}" | jq
 
 set +x
