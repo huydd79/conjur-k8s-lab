@@ -16,6 +16,7 @@ podman run --name $node_name \
   --dns $CONJUR_IP \
   -p "443:443" -p "636:636" -p "5432:5432" -p "1999:1999" \
   --security-opt seccomp:unconfined \
+  --cap-add AUDIT_WRITE \
   -v $log_dir:/var/log/conjur/:Z \
   --log-driver json-file \
   --log-opt max-size=1000m \
