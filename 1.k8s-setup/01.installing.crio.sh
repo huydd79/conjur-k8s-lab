@@ -15,7 +15,6 @@ NC='\033[0m' # No Color (Reset)
 # Recommended versions for modern K8s deployment
 CRIO_VERSION="v1.30"
 K8S_VERSION="v1.30"
-OS_VERSION="CentOS_9_Stream" # Used for some repository paths
 
 echo -e "${GREEN}--- 🛠️ Starting K8s/CRI-O Installation on CentOS 9 Stream (Version: ${K8S_VERSION}) ---${NC}"
 
@@ -60,7 +59,7 @@ sudo systemctl stop firewalld
 sudo systemctl disable firewalld
 
 # -----------------------------------------------------------------------------
-# PART 2: INSTALLING CRI-O CONTAINER RUNTIME (Using Community OBS Link)
+# PART 2: INSTALLING CRI-O CONTAINER RUNTIME
 # -----------------------------------------------------------------------------
 echo -e "\n${BLUE}## 3. Installing CRI-O Container Runtime (Version: ${CRIO_VERSION})...${NC}"
 
@@ -75,8 +74,13 @@ sudo dnf clean all
 echo -e "${YELLOW}Adding CRI-O repository from: ${CRIO_REPO_URL}${NC}"
 curl -L -o /etc/yum.repos.d/crio.repo "${CRIO_REPO_URL}"
 
-# Install CRI-O and cri-tools
-sudo dnf install -y cri-o cri-tools
+# Optimization: Force DNF to refresh cache after adding new repo
+echo -e "${YELLOW}Generating DNF cache for new CRI-O repository...${NC}"
+sudo dnf makecache
+
+# Install only the core CRI-O package. cri-tools will be installed in Part 3.
+echo -e "${YELLOW}Installing core CRI-O package...${NC}"
+sudo dnf install -y cri-o
 
 # Enable and start CRI-O service
 sudo systemctl daemon-reload
@@ -91,6 +95,8 @@ sudo systemctl status crio --no-pager
 echo -e "\n${BLUE}## 4. Installing Kubernetes Components (Version: ${K8S_VERSION})...${NC}"
 
 # Add Kubernetes official repository (pkgs.k8s.io)
+# Note: 'cri-tools' and 'kubernetes-cni' are excluded here but will be installed
+# as dependencies later, which is the desired behavior when using the K8s repo.
 cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -98,10 +104,11 @@ baseurl=https://pkgs.k8s.io/core:/stable:/${K8S_VERSION}/rpm/
 enabled=1
 gpgcheck=1
 gpgkey=https://pkgs.k8s.io/core:/stable:/${K8S_VERSION}/rpm/repodata/repomd.xml.key
-exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
+exclude=kubelet kubeadm kubectl
 EOF
 
 # Install the components
+# The --disableexcludes=kubernetes flag overrides the exclusion list above for these packages.
 sudo dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 
 # Enable kubelet service (kubeadm will start it later)
