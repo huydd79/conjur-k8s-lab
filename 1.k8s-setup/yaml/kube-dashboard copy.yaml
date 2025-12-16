@@ -97,15 +97,15 @@ rules:
     resources: ["configmaps"]
     resourceNames: ["kubernetes-dashboard-settings"]
     verbs: ["get", "update"]
-    # Allow Dashboard to get metrics from Metrics Scraper.
-  - apiGroups: [""]
-    resources: ["services/proxy"]
-    resourceNames: ["dashboard-metrics-scraper", "http:dashboard-metrics-scraper"]
-    verbs: ["get"]
+    # Allow Dashboard to get metrics.
   - apiGroups: [""]
     resources: ["services"]
-    resourceNames: ["dashboard-metrics-scraper"]
+    resourceNames: ["heapster", "dashboard-metrics-scraper"]
     verbs: ["proxy"]
+  - apiGroups: [""]
+    resources: ["services/proxy"]
+    resourceNames: ["heapster", "http:heapster:", "https:heapster:", "dashboard-metrics-scraper", "http:dashboard-metrics-scraper"]
+    verbs: ["get"]
 
 ---
 
@@ -186,10 +186,17 @@ spec:
               protocol: TCP
           args:
             - --auto-generate-certificates
+            #- --tls-cert-file=/tls.crt
+            #- --tls-key-file=/tls.key
             - --namespace=kubernetes-dashboard
+            # Uncomment the following line to manually specify Kubernetes API server Host
+            # If not specified, Dashboard will attempt to auto discover the API server and connect
+            # to it. Uncomment only if the default does not work.
+            # - --apiserver-host=http://my-address:port
           volumeMounts:
             - name: kubernetes-dashboard-certs
               mountPath: /certs
+              # Create on-disk volume to store exec logs
             - mountPath: /tmp
               name: tmp-volume
           livenessProbe:
@@ -213,12 +220,9 @@ spec:
       serviceAccountName: kubernetes-dashboard
       nodeSelector:
         "kubernetes.io/os": linux
+      # Comment the following tolerations if Dashboard must not be deployed on master
       tolerations:
-        # Toleration cho role master cũ (tương thích ngược)
         - key: node-role.kubernetes.io/master
-          effect: NoSchedule
-        # Toleration cho role control-plane mới (Quan trọng cho K8s >= v1.25)
-        - key: node-role.kubernetes.io/control-plane
           effect: NoSchedule
 
 ---
@@ -284,12 +288,9 @@ spec:
       serviceAccountName: kubernetes-dashboard
       nodeSelector:
         "kubernetes.io/os": linux
+      # Comment the following tolerations if Dashboard must not be deployed on master
       tolerations:
-        # Toleration cho role master cũ (tương thích ngược)
         - key: node-role.kubernetes.io/master
-          effect: NoSchedule
-        # Toleration cho role control-plane mới (Quan trọng cho K8s >= v1.25)
-        - key: node-role.kubernetes.io/control-plane
           effect: NoSchedule
       volumes:
         - name: tmp-volume
