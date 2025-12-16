@@ -1,5 +1,5 @@
 # Building standalone CyberArk Conjur Enterprise and K8s LAB
-###NOTE: I just updated k8s installation scripts to address some changes on latest components version. Please check them out...
+### 202512 NOTE: I just updated k8s installation scripts to address some changes on latest components version. Please check them out...
 
 This project will help you to quickly build up the standalone, single VM lab environment to test conjur and k8s application integration including:
 - conjur follower in kubernetes 
