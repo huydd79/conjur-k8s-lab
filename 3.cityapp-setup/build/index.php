@@ -84,7 +84,7 @@
     <header>
       <div class="navbar navbar-dark bg-dark shadow-sm">
         <div class="container">
-          <img src="https://docs.cyberark.com/Product-Doc/OnlineHelp/Portal/Content/Resources/_TopNav/Images/Skin/lg-cyberark.svg">
+          <img src="https://www.huydo.net/cybr/cyberark-logo-white.svg" height="50" alt="CyberArk Logo">
         </div>
       </div>
     </header>
