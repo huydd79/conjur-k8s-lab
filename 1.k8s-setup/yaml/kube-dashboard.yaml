@@ -1,10 +1,13 @@
+# -----------------------------------------------------------------------------
+# Kubernetes Dashboard Core Deployment Manifest
+# -----------------------------------------------------------------------------
+
 apiVersion: v1
 kind: Namespace
 metadata:
   name: kubernetes-dashboard
 
 ---
-
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -14,7 +17,7 @@ metadata:
   namespace: kubernetes-dashboard
 
 ---
-
+# Dashboard Main Service (Exposed via NodePort 30443)
 kind: Service
 apiVersion: v1
 metadata:
@@ -33,7 +36,7 @@ spec:
     k8s-app: kubernetes-dashboard
 
 ---
-
+# Required Secrets for internal Dashboard operation
 apiVersion: v1
 kind: Secret
 metadata:
@@ -44,7 +47,6 @@ metadata:
 type: Opaque
 
 ---
-
 apiVersion: v1
 kind: Secret
 metadata:
@@ -57,7 +59,6 @@ data:
   csrf: ""
 
 ---
-
 apiVersion: v1
 kind: Secret
 metadata:
@@ -68,7 +69,6 @@ metadata:
 type: Opaque
 
 ---
-
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -78,7 +78,7 @@ metadata:
   namespace: kubernetes-dashboard
 
 ---
-
+# Dashboard Role and ClusterRole configuration
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -87,17 +87,14 @@ metadata:
   name: kubernetes-dashboard
   namespace: kubernetes-dashboard
 rules:
-  # Allow Dashboard to get, update and delete Dashboard exclusive secrets.
   - apiGroups: [""]
     resources: ["secrets"]
     resourceNames: ["kubernetes-dashboard-key-holder", "kubernetes-dashboard-certs", "kubernetes-dashboard-csrf"]
     verbs: ["get", "update", "delete"]
-    # Allow Dashboard to get and update 'kubernetes-dashboard-settings' config map.
   - apiGroups: [""]
     resources: ["configmaps"]
     resourceNames: ["kubernetes-dashboard-settings"]
     verbs: ["get", "update"]
-    # Allow Dashboard to get metrics from Metrics Scraper.
   - apiGroups: [""]
     resources: ["services/proxy"]
     resourceNames: ["dashboard-metrics-scraper", "http:dashboard-metrics-scraper"]
@@ -108,7 +105,6 @@ rules:
     verbs: ["proxy"]
 
 ---
-
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -116,13 +112,11 @@ metadata:
     k8s-app: kubernetes-dashboard
   name: kubernetes-dashboard
 rules:
-  # Allow Metrics Scraper to get metrics from the Metrics server
   - apiGroups: ["metrics.k8s.io"]
     resources: ["pods", "nodes"]
     verbs: ["get", "list", "watch"]
 
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -140,7 +134,6 @@ subjects:
     namespace: kubernetes-dashboard
 
 ---
-
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -155,7 +148,7 @@ subjects:
     namespace: kubernetes-dashboard
 
 ---
-
+# Dashboard Core Deployment
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -214,15 +207,13 @@ spec:
       nodeSelector:
         "kubernetes.io/os": linux
       tolerations:
-        # Toleration cho role master cũ (tương thích ngược)
         - key: node-role.kubernetes.io/master
           effect: NoSchedule
-        # Toleration cho role control-plane mới (Quan trọng cho K8s >= v1.25)
         - key: node-role.kubernetes.io/control-plane
           effect: NoSchedule
 
 ---
-
+# Metrics Scraper Service
 kind: Service
 apiVersion: v1
 metadata:
@@ -238,7 +229,7 @@ spec:
     k8s-app: dashboard-metrics-scraper
 
 ---
-
+# Metrics Scraper Deployment
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -285,10 +276,8 @@ spec:
       nodeSelector:
         "kubernetes.io/os": linux
       tolerations:
-        # Toleration cho role master cũ (tương thích ngược)
         - key: node-role.kubernetes.io/master
           effect: NoSchedule
-        # Toleration cho role control-plane mới (Quan trọng cho K8s >= v1.25)
         - key: node-role.kubernetes.io/control-plane
           effect: NoSchedule
       volumes:
